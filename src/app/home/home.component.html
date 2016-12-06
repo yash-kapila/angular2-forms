@@ -1,0 +1,81 @@
+<div class="home-container">
+    <h3> Employee Forms </h3>
+    <!-- # gives us a reference to the element in the template -->
+    <!-- #firstName="ngModel" let us access the ngModel validation properties like 
+         pristine, dirty, touched, untouched, valid and invalid -->
+    <form #form='ngForm' novalidate (submit)="submitForm(form)">
+        <div class="form-group" [ngClass]="{'has-error': firstName.invalid && firstName.touched}">
+            <label for="firstNameId" class="control-label"> 
+                First Name 
+            </label>
+            <!-- two way data binding using banana-in-a-box syntax -->
+            <input id="firstNameId" #firstName="ngModel" type="text" class="form-control" required name="firstName" 
+                [(ngModel)]="employee.firstName">
+            <div *ngIf="firstName.invalid && firstName.touched" class="alert alert-danger danger-message">
+                First Name is required
+            </div>
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': lastName.invalid && lastName.touched}">
+            <label for="lastNameId" class="control-label"> 
+                Last Name 
+            </label>
+            <!-- two way data binding without banana-in-a-box syntax -->
+            <input id="lastNameId" #lastName="ngModel" type="text" class="form-control" required name="lastName"
+                [ngModel]="employee.lastName"
+                (ngModelChange)="employee.lastName=$event">
+            <div *ngIf="lastName.invalid && lastName.touched" class="alert alert-danger danger-message">
+                Last Name is required
+            </div>
+        </div>
+        
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="isFullTime" [(ngModel)]="employee.isFullTime"> 
+                    Full Time Employee
+            </label>
+        </div>
+
+        <div [ngClass]="{'has-error': hasPaymentTypeError === true}">
+            <label class="control-label"> 
+                Payment Type 
+            </label>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentType" value="W2" checked 
+                        [(ngModel)]="employee.paymentType"
+                        (change)="hasPaymentTypeError = false"> 
+                        W2
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentType" value="1099" 
+                        [(ngModel)]="employee.paymentType"
+                        (change)="hasPaymentTypeError = false"> 
+                        1099
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': hasPrimaryLanguageError}">
+            <label class="control-label"> 
+                Primary Language 
+            </label>
+            <select class="form-control" #primaryLanguage name="primaryLanguage" 
+                [(ngModel)]="employee.primaryLanguage"
+                (blur)="validatePrimaryLanguage(primaryLanguage.value)"
+                (change)="validatePrimaryLanguage(primaryLanguage.value)">
+                <option value="default"> 
+                    Select 
+                </option>
+                <option *ngFor="let lang of languages"> 
+                    {{ lang }} 
+                </option>
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+            Submit
+        </button>
+    </form>
+</div>
